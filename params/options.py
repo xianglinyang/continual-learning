@@ -3,7 +3,7 @@ import argparse
 ##-------------------------------------------------------------------------------------------------------------------##
 
 # Where to store the data / results / models / plots
-store = "./store"
+store = "/home/yangxl21/git_space/continual-learning/store"
 
 ##-------------------------------------------------------------------------------------------------------------------##
 
@@ -13,6 +13,14 @@ store = "./store"
 
 def define_args(filename, description):
     parser = argparse.ArgumentParser('./{}.py'.format(filename), description=description)
+    return parser
+
+def add_writer_options(parser, main=False, comparison=False, compare_hyper=False, pretrain=False, **kwargs):
+    parser.add_argument('--config', default="", metavar="FILE", help="Path to config file")
+    parser.add_argument('--log_dir', metavar="FILE", help="The path to checkpoint")
+    # # opts arg needs to match set_cfg
+    # parser.add_argument("opts", default=[], nargs=argparse.REMAINDER,
+    #                     help="Modify config options using the command-line")
     return parser
 
 def add_general_options(parser, main=False, comparison=False, compare_hyper=False, pretrain=False, **kwargs):

@@ -4,24 +4,15 @@ from utils import checkattr
 ##-------------------------------------------------------------------------------------------------------------------##
 
 def define_classifier(args, config, device, depth=0, stream=False):
-    from utils import checkattr
     if checkattr(args, 'separate_networks'):
-        print('separate_networks')
         model = define_separate_classifiers(args=args, config=config, device=device, depth=depth)
     elif checkattr(args, 'feedback'):
-        print('feedback')
         model = define_rtf_classifier(args=args, config=config, device=device, depth=depth)
     elif checkattr(args, 'gen_classifier'):
-        print('gen_classifier')
         model = define_generative_classifer(args=args, config=config, device=device, depth=depth)
     elif stream:
-        print("stream")
         model = define_stream_classifier(args=args, config=config, device=device, depth=depth)
     else:
-        print("cl")
-        print(args)
-        print(config)
-        print(depth)
         model = define_standard_classifier(args=args, config=config, device=device, depth=depth)
     return model
 

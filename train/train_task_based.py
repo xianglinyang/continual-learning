@@ -12,7 +12,7 @@ from models.cl.continual_learner import ContinualLearner
 
 def train_cl(model, train_datasets, iters=2000, batch_size=32, baseline='none',
              loss_cbs=list(), eval_cbs=list(), sample_cbs=list(), context_cbs=list(),
-             generator=None, gen_iters=0, gen_loss_cbs=list(), **kwargs):
+             generator=None, gen_iters=0, gen_loss_cbs=list(), writer=None, **kwargs):
     '''Train a model (with a "train_a_batch" method) on multiple contexts.
 
     [model]               <nn.Module> main model to optimize across all contexts
@@ -419,6 +419,8 @@ def train_cl(model, train_datasets, iters=2000, batch_size=32, baseline='none',
                             lambda y, x=model.classes_per_context: y % x
                         )
                         previous_datasets = [MemorySetDataset(model.memory_sets, target_transform=target_transform)]
+        idxs = train_dataset.sub_indeces
+        writer.add_checkpoint_data(model.state_dict(), idxs, context, context-1)
 
 #------------------------------------------------------------------------------------------------------------#
 
