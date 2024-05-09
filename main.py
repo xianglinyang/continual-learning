@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import sys
 import numpy as np
 import time
 import torch
@@ -19,6 +20,9 @@ from params.param_values import set_method_options,check_for_errors,set_default_
 from eval import evaluate, callbacks as cb
 from visual import visual_plt
 
+sys.path.append("/home/yangxl21/git_space/GenVis")
+from writer.summary_writer import SummaryWriter
+os.environ["CUDA_VISIBLE_DEVICES"]="4"
 
 ## Function for specifying input-options and organizing / checking them
 def handle_inputs():
@@ -33,6 +37,7 @@ def handle_inputs():
     parser = options.add_model_options(parser, **kwargs)
     parser = options.add_train_options(parser, **kwargs)
     parser = options.add_cl_options(parser, **kwargs)
+    parser = options.add_writer_options(parser, **kwargs)
     # Parse, process and check chosen options
     args = parser.parse_args()
     set_method_options(args)                         # -if a method's "convenience"-option is chosen, select components
@@ -42,6 +47,9 @@ def handle_inputs():
 
 
 def run(args, verbose=False):
+    # >>>>>>>>>> Define summary writer
+    writer = SummaryWriter(args.log_dir)
+    # <<<<<<<<<< Define summary writer
 
     # Create plots- and results-directories if needed
     if not os.path.isdir(args.r_dir):
@@ -415,6 +423,7 @@ def run(args, verbose=False):
             # -if using generative replay with a separate generative model:
             generator=generator, gen_iters=args.g_iters if hasattr(args, 'g_iters') else args.iters,
             gen_loss_cbs=generator_loss_cbs,
+            writer=writer
         )
         # -get total training-time in seconds, write to file and print to screen
         if args.time:
